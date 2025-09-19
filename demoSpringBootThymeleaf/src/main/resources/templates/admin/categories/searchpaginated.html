@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{admin/layout.html}">
+<head>
+<meta charset="UTF-8">
+<title>Search Category (Paginated)</title>
+<th:block layout:fragment="css">
+	<style>
+.card {
+	border-radius: 0.75rem;
+	overflow: hidden;
+}
+
+.card-header {
+	background: linear-gradient(90deg, #0d6efd, #0dcaf0);
+	color: #fff;
+	font-weight: 600;
+}
+
+.card-header form input {
+	border-radius: 20px 0 0 20px;
+	border-right: none;
+}
+
+.card-header form button {
+	border-radius: 0 20px 20px 0;
+}
+
+.pagination .page-link {
+	border-radius: 50% !important;
+	width: 38px;
+	height: 38px;
+	line-height: 36px;
+	text-align: center;
+}
+</style>
+</th:block>
+</head>
+<body>
+	<section class="row" layout:fragment="content">
+		<div class="col-md-10 offset-md-1">
+			<div class="card shadow border-0">
+				<!-- Header -->
+				<div
+					class="card-header d-flex justify-content-between align-items-center">
+					<span><i class="bi bi-tags-fill me-2"></i>Danh sách Category</span>
+					<form th:action="@{/admin/categories/searchpaginated}" method="get"
+						class="d-flex" onsubmit="return validateSearch()">
+						<input type="text" class="form-control form-control-sm me-2"
+							name="name" id="searchName" placeholder="Tìm kiếm category..."
+							th:value="${name}">
+						<button type="submit" class="btn btn-sm btn-light">
+							<i class="bi bi-search"></i>
+						</button>
+					</form>
+					<script>
+						function validateSearch() {
+							const input = document.getElementById("searchName").value
+									.trim();
+							if (input === "") {
+								alert("Vui lòng nhập từ khóa tìm kiếm!");
+								return false; // chặn submit
+							}
+							return true;
+						}
+					</script>
+				</div>
+
+				<!-- Body -->
+				<div class="card-body">
+					<!-- Thông báo khi không có dữ liệu -->
+					<div th:if="${!categoryPage.hasContent()}"
+						class="alert alert-warning text-center">
+						<i class="bi bi-exclamation-triangle me-1"></i> Không tìm thấy
+						category nào.
+					</div>
+
+					<!-- Bảng kết quả -->
+					<div th:if="${categoryPage.hasContent()}" class="table-responsive">
+						<table class="table table-hover align-middle text-center mb-0">
+							<thead class="table-light">
+								<tr>
+									<th>ID</th>
+									<th class="text-start">Tên Category</th>
+									<th class="text-center">Hành động</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="category : ${categoryPage.content}">
+									<td class="fw-bold" th:text="${category.categoryId}"></td>
+									<td class="text-start" th:text="${category.name}"></td>
+									<td><a
+										th:href="@{'/admin/categories/edit/' + ${category.categoryId}}"
+										class="btn btn-sm btn-outline-warning me-1" title="Chỉnh sửa">
+											<i class="bi bi-pencil"></i>
+									</a> <a
+										th:href="@{'/admin/categories/delete/' + ${category.categoryId}}"
+										class="btn btn-sm btn-outline-danger" title="Xoá"
+										onclick="return confirm('Bạn có chắc chắn muốn xoá?')"> <i
+											class="bi bi-trash"></i>
+									</a></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<!-- Pagination -->
+					<nav th:if="${categoryPage.totalPages > 1}" class="mt-3">
+						<ul class="pagination justify-content-center">
+							<!-- First page -->
+							<li class="page-item"
+								th:classappend="${categoryPage.first}? 'disabled'"><a
+								class="page-link"
+								th:href="@{|/admin/categories/searchpaginated?name=${name}&size=${categoryPage.size}&page=0|}">
+									« </a></li>
+
+							<!-- Page numbers -->
+							<li class="page-item"
+								th:each="pageNum : ${#numbers.sequence(0, categoryPage.totalPages-1)}"
+								th:classappend="${pageNum == categoryPage.number} ? 'active'">
+								<a class="page-link"
+								th:href="@{|/admin/categories/searchpaginated?name=${name}&size=${categoryPage.size}&page=${pageNum}|}">
+									[[${pageNum+1}]] </a>
+							</li>
+
+							<!-- Last page -->
+							<li class="page-item"
+								th:classappend="${categoryPage.last}? 'disabled'"><a
+								class="page-link"
+								th:href="@{|/admin/categories/searchpaginated?name=${name}&size=${categoryPage.size}&page=${categoryPage.totalPages-1}|}">
+									» </a></li>
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+</html>
