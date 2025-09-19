@@ -1,4 +1,4 @@
-# LTWeb_BT7
+# LTWeb_BT8
 1. Đọc bài giảng sau: https://utexlms.hcmute.edu.vn/pluginfile.php/1326143/mod_assign/intro/16_API%20RestFul_Springboot.pdf
    
 2.  Đọc và làm bài hướng dẫn sau: https://utexlms.hcmute.edu.vn/pluginfile.php/1125467/mod_resource/content/1/H%C6%AF%E1%BB%9ANG%20D%E1%BA%AAN%20CRUD%20API%20CATEGORY%20TR%C3%8AN%20SPRING%20BOOT%203.pdf
